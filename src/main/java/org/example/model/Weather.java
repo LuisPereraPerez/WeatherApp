@@ -10,7 +10,7 @@ public class Weather {
     private final Instant ts;
     private final Location location;
 
-    public Weather(double temp, double precipitation, int humidity, int clouds, Instant ts, Location location) {
+    public Weather(double temp, double precipitation, int humidity, int clouds, Double windSpeed, Instant ts, Location location) {
         this.temp = temp;
         this.precipitation = precipitation;
         this.humidity = humidity;
