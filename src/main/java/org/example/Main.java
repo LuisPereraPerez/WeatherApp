@@ -1,7 +1,20 @@
 package org.example;
 
+import org.example.control.*;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        if (args.length != 1){
+            System.err.println("Please provide the API Key as an argument.");
+            System.exit(1);
+        }
+
+        String apiKey = args[0];
+
+        WeatherProvider weatherProvider = new OpenWeatherMapProvider(apiKey);
+        WeatherStore weatherStore = new SQLiteWeatherStore();
+        WeatherController weatherController = new WeatherController(weatherProvider, weatherStore);
+
+        weatherController.runTask();
     }
 }
