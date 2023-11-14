@@ -37,18 +37,23 @@ public class SQLiteWeatherStore implements  WeatherStore{
     @Override
     public void storeWeather(String location, Weather weather) {
         try (Connection connection = DriverManager.getConnection(DATABASE_URL)){
-            String insertQuery = "INSERT OR REPLACE INTO " + weather.getLocation().getIsland() + " (temp, precipitation, humidity, clouds, windSpeed, ts) VALUES(?, ?, ?, ?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(insertQuery);
-            statement.setDouble(1, weather.getTemp());
-            statement.setDouble(2, weather.getPrecipitation());
-            statement.setInt(3, weather.getHumidity());
-            statement.setInt(4, weather.getClouds());
-            statement.setDouble(5, weather.getWindSpeed());
-            statement.setString(6, weather.getTs().toString());
-            statement.executeUpdate();
+            String insertQuery = "INSERT OR REPLACE INTO " + weather.getLocation().getIsland() +
+                    " (temp, precipitation, humidity, clouds, windSpeed, ts) VALUES(?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(insertQuery)) {
+                statement.setDouble(1, weather.getTemp());
+                statement.setDouble(2, weather.getPrecipitation());
+                statement.setInt(3, weather.getHumidity());
+                statement.setInt(4, weather.getClouds());
+                statement.setDouble(5, weather.getWindSpeed());
+                statement.setString(6, weather.getTs().toString());
+
+                statement.executeUpdate();
+            }
         }
         catch (SQLException e) {
+            System.err.println("Error connecting to the database: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
 }

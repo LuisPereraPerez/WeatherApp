@@ -9,10 +9,11 @@ import org.jsoup.nodes.Document;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
-
-public class OpenWeatherMapProvider implements  WeatherProvider{
+public class OpenWeatherMapProvider implements WeatherProvider {
 
     private String apiKey;
 
@@ -21,8 +22,8 @@ public class OpenWeatherMapProvider implements  WeatherProvider{
     }
 
     @Override
-    public Weather get(Location location){
-        try{
+    public List<Weather> get(Location location) {
+        try {
             String url = "https://api.openweathermap.org/data/2.5/forecast?lat=" +
                     String.valueOf(location.getLat()) +
                     "&lon=" +
@@ -30,67 +31,62 @@ public class OpenWeatherMapProvider implements  WeatherProvider{
                     "&appid=" +
                     this.apiKey +
                     "&units=metric";
+
             Document doc = Jsoup.connect(url).ignoreContentType(true).get();
             String jsonResponse = doc.text();
 
-            Gson gson =  new Gson();
+            Gson gson = new Gson();
             JsonObject jsonObject = gson.fromJson(jsonResponse, JsonObject.class);
             JsonArray listArray = jsonObject.getAsJsonArray("list");
 
-            Instant targetInstant = findTargetData(listArray);
+            List<Weather> fiveDays = new ArrayList<>();
 
-            if (targetInstant != null){
-                for (JsonElement element : listArray){
-                    JsonObject data = element.getAsJsonObject();
-                    Instant dataInstant = Instant.ofEpochSecond(data.get("dt").getAsLong());
+            for (int i = 0; i < listArray.size(); i++) {
+                JsonObject data = listArray.get(i).getAsJsonObject();
 
-                    if (dataInstant.equals(targetInstant)) {
-                        return extractWeatherData(data, location);
+                if (isPrediction(data)) {
+                    Weather weather = extractWeatherData(data, location);
+                    fiveDays.add(weather);
+
+                    if (fiveDays.size() == 5) {
+                        break;
                     }
                 }
             }
-
-            throw new RuntimeException("No data found for the desired timestamp.");
-
+            return fiveDays;
         }
         catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    private boolean isPrediction(JsonObject data) {
+        String predictionDateTime = data.get("dt_txt").getAsString();
+
+        predictionDateTime = predictionDateTime.replace("Z", "");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime localDateTime = LocalDateTime.parse(predictionDateTime, formatter);
+
+        return localDateTime.getHour() == 12 && localDateTime.getMinute() == 0;
+    }
+
     private Weather extractWeatherData(JsonObject data, Location location) {
         JsonObject mainData = data.getAsJsonObject("main");
-        Double temp = mainData.get("temp").getAsDouble();
+        Double temperature = mainData.get("temp").getAsDouble();
+
         Integer humidity = mainData.get("humidity").getAsInt();
+
         JsonObject rainData = data.getAsJsonObject("rain");
-        Double precipitation = (rainData != null && rainData.has("3h")) ? rainData.get("3h").getAsDouble() : 0.0;
+        Double possibilityOfPrecipitation = (rainData != null && rainData.has("3h")) ? rainData.get("3h").getAsDouble() : 0.0;
+
         JsonObject cloudsData = data.getAsJsonObject("clouds");
         Integer cloudiness = cloudsData.get("all").getAsInt();
+
         JsonObject windData = data.getAsJsonObject("wind");
         Double windSpeed = windData.get("speed").getAsDouble();
 
-        Weather weather = new Weather(temp, precipitation, humidity, cloudiness, windSpeed, Instant.ofEpochSecond(data.get("dt").getAsLong()), location);
+        Weather weather = new Weather(temperature, possibilityOfPrecipitation, humidity, cloudiness, windSpeed, Instant.ofEpochSecond(data.get("dt").getAsLong()), location);
         return weather;
-    }
-
-    private Instant findTargetData(JsonArray listArray) {
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        LocalDateTime targetDateTime = currentDateTime
-                .withHour(12)
-                .withMinute(0)
-                .withSecond(0)
-                .withNano(0)
-                .plusDays(1);
-
-        for (JsonElement element : listArray) {
-            JsonObject data = element.getAsJsonObject();
-            Instant dataInstant = Instant.ofEpochSecond(data.get("dt").getAsLong());
-            LocalDateTime dataDateTime = LocalDateTime.ofInstant(dataInstant, ZoneId.of("UTC"));
-
-            if (dataDateTime.isEqual(targetDateTime)){
-                return dataInstant;
-            }
-        }
-        return null;
     }
 }

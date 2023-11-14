@@ -3,6 +3,8 @@ package org.example;
 import org.example.control.*;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -17,6 +19,16 @@ public class Main {
         WeatherStore weatherStore = new SQLiteWeatherStore();
         WeatherController weatherController = new WeatherController(weatherProvider, weatherStore);
 
-        weatherController.runTask();
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    weatherController.runTask();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }, 0, 6 * 60 * 60 * 1000);
     }
 }
