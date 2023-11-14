@@ -27,9 +27,9 @@ public class OpenWeatherMapProvider implements  WeatherProvider{
                     String.valueOf(location.getLat()) +
                     "&lon=" +
                     String.valueOf(location.getLon()) +
-                    "%appid=" +
+                    "&appid=" +
                     this.apiKey +
-                    "units=metric";
+                    "&units=metric";
             Document doc = Jsoup.connect(url).ignoreContentType(true).get();
             String jsonResponse = doc.text();
 

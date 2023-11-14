@@ -7,14 +7,16 @@ public class Weather {
     private final double precipitation;
     private final int humidity;
     private final int clouds;
+    private final double windSpeed;
     private final Instant ts;
     private final Location location;
 
-    public Weather(double temp, double precipitation, int humidity, int clouds, Double windSpeed, Instant ts, Location location) {
+    public Weather(double temp, double precipitation, int humidity, int clouds, double windSpeed, Instant ts, Location location) {
         this.temp = temp;
         this.precipitation = precipitation;
         this.humidity = humidity;
         this.clouds = clouds;
+        this.windSpeed = windSpeed;
         this.ts = ts;
         this.location = location;
     }
@@ -33,6 +35,10 @@ public class Weather {
 
     public int getClouds() {
         return clouds;
+    }
+
+    public double getWindSpeed() {
+        return windSpeed;
     }
 
     public Instant getTs() {

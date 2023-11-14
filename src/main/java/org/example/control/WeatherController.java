@@ -27,22 +27,22 @@ public class WeatherController {
     }
 
     private void Task() {
-        Weather weatherElHierro = this.provider.get(new Location(27.714005, -17.997413, "El Hierro"));
-        Weather weatherLaGomera = this.provider.get(new Location(28.089477, -17.112303, "La Gomera"));
-        Weather weatherLaPalma = this.provider.get(new Location(28.657405, -17.912805, "La Palma"));
+        Weather weatherElHierro = this.provider.get(new Location(27.714005, -17.997413, "ElHierro"));
+        Weather weatherLaGomera = this.provider.get(new Location(28.089477, -17.112303, "LaGomera"));
+        Weather weatherLaPalma = this.provider.get(new Location(28.657405, -17.912805, "LaPalma"));
         Weather weatherTenerife = this.provider.get(new Location(28.482996, -16.317394, "Tenerife"));
-        Weather weatherGranCanaria = this.provider.get(new Location(27.998142, -15.419177, "Gran Canaria"));
+        Weather weatherGranCanaria = this.provider.get(new Location(27.998142, -15.419177, "GranCanaria"));
         Weather weatherFuerteventura = this.provider.get(new Location(28.102040, -14.388376, "Fuerteventura"));
         Weather weatherLanzarote = this.provider.get(new Location(29.060357, -13.559169, "Lanzarote"));
-        Weather weatherLaGraciosa = this.provider.get(new Location(29.232142, -13.502623, "La Graciosa"));
+        Weather weatherLaGraciosa = this.provider.get(new Location(29.232142, -13.502623, "LaGraciosa"));
 
-        store.storeWeather("El Hierro", weatherElHierro);
-        store.storeWeather("La Gomera", weatherLaGomera);
-        store.storeWeather("La Palma", weatherLaPalma);
+        store.storeWeather("ElHierro", weatherElHierro);
+        store.storeWeather("LaGomera", weatherLaGomera);
+        store.storeWeather("LaPalma", weatherLaPalma);
         store.storeWeather("Tenerife", weatherTenerife);
-        store.storeWeather("Gran Canaria", weatherGranCanaria);
+        store.storeWeather("GranCanaria", weatherGranCanaria);
         store.storeWeather("Fuerteventura", weatherFuerteventura);
         store.storeWeather("Lanzarote", weatherLanzarote);
-        store.storeWeather("La Graciosa", weatherLaGraciosa);
+        store.storeWeather("LaGraciosa", weatherLaGraciosa);
     }
 }
