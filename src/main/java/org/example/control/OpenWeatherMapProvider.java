@@ -63,30 +63,29 @@ public class OpenWeatherMapProvider implements WeatherProvider {
     private boolean isPrediction(JsonObject data) {
         String predictionDateTime = data.get("dt_txt").getAsString();
 
-        predictionDateTime = predictionDateTime.replace("Z", "");
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime localDateTime = LocalDateTime.parse(predictionDateTime, formatter);
 
         return localDateTime.getHour() == 12 && localDateTime.getMinute() == 0;
     }
 
+
     private Weather extractWeatherData(JsonObject data, Location location) {
         JsonObject mainData = data.getAsJsonObject("main");
-        Double temperature = mainData.get("temp").getAsDouble();
+        Double temp = mainData.get("temp").getAsDouble();
 
         Integer humidity = mainData.get("humidity").getAsInt();
 
         JsonObject rainData = data.getAsJsonObject("rain");
-        Double possibilityOfPrecipitation = (rainData != null && rainData.has("3h")) ? rainData.get("3h").getAsDouble() : 0.0;
+        Double precipitation = (rainData != null && rainData.has("3h")) ? rainData.get("3h").getAsDouble() : 0.0;
 
         JsonObject cloudsData = data.getAsJsonObject("clouds");
-        Integer cloudiness = cloudsData.get("all").getAsInt();
+        Integer clouds = cloudsData.get("all").getAsInt();
 
         JsonObject windData = data.getAsJsonObject("wind");
         Double windSpeed = windData.get("speed").getAsDouble();
 
-        Weather weather = new Weather(temperature, possibilityOfPrecipitation, humidity, cloudiness, windSpeed, Instant.ofEpochSecond(data.get("dt").getAsLong()), location);
+        Weather weather = new Weather(temp, precipitation, humidity, clouds, windSpeed, Instant.ofEpochSecond(data.get("dt").getAsLong()), location);
         return weather;
     }
 }

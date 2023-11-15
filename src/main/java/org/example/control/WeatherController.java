@@ -16,14 +16,6 @@ public class WeatherController {
         this.store = weatherStore;
     }
 
-    public WeatherProvider getProvider() {
-        return provider;
-    }
-
-    public WeatherStore getStore() {
-        return store;
-    }
-
     public void runTask() throws IOException {
         task();
     }
