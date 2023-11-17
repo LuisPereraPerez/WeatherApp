@@ -42,7 +42,7 @@ This Java application periodically fetches weather data from the OpenWeatherMap 
 - Interfaces are tailored to specific use cases.
 
 ### Diagram
-- ![Diagrama UML](diagramaUML.png)
+ ![Diagrama UML](diagramaUML.png)
 
 ## How to Run
 
