@@ -63,7 +63,8 @@ public class OpenWeatherMapProvider implements WeatherProvider {
 
     private boolean isPrediction(JsonObject data) {
         String predictionDateTime = data.get("dt_txt").getAsString();
-        LocalDateTime localDateTime = LocalDateTime.parse(predictionDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime localDateTime = LocalDateTime.parse(predictionDateTime, formatter);
         return localDateTime.getHour() == 12 && localDateTime.getMinute() == 0;
     }
 

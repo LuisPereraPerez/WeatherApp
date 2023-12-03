@@ -34,6 +34,7 @@ public class SQLiteWeatherStore implements  WeatherStore{
         }
     }
 
+
     @Override
     public void storeWeather(String location, Weather weather) {
         try (Connection connection = DriverManager.getConnection(DATABASE_URL)){
@@ -46,6 +47,7 @@ public class SQLiteWeatherStore implements  WeatherStore{
                 statement.setInt(4, weather.getClouds());
                 statement.setDouble(5, weather.getWindSpeed());
                 statement.setString(6, weather.getTs().toString());
+
                 statement.executeUpdate();
             }
         }
