@@ -19,17 +19,13 @@ public class SQLiteWeatherStore implements  WeatherStore{
         try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
             try (Statement statement = connection.createStatement()) {
                 for (String island : ISLANDS) {
-                    String dropTableQuery = "DROP TABLE IF EXISTS " + island;
-                    statement.executeUpdate(dropTableQuery);
-                }
-                for (String island : ISLANDS) {
-                    String createTableQuery = "CREATE TABLE " + island + " (" +
+                    String createTableQuery = "CREATE TABLE IF NOT EXISTS " + island + " (" +
                             "temp REAL, " +
                             "precipitation REAL, " +
                             "humidity INTEGER, " +
                             "clouds INTEGER, " +
                             "windSpeed REAL, " +
-                            "ts TEXT)";
+                            "ts TEXT PRIMARY KEY)";
                     statement.executeUpdate(createTableQuery);
                 }
             }
@@ -37,7 +33,6 @@ public class SQLiteWeatherStore implements  WeatherStore{
             e.printStackTrace();
         }
     }
-
 
     @Override
     public void storeWeather(String location, Weather weather) {
@@ -51,7 +46,6 @@ public class SQLiteWeatherStore implements  WeatherStore{
                 statement.setInt(4, weather.getClouds());
                 statement.setDouble(5, weather.getWindSpeed());
                 statement.setString(6, weather.getTs().toString());
-
                 statement.executeUpdate();
             }
         }

@@ -8,17 +8,24 @@ import java.util.TimerTask;
 
 public class Main {
     public static void main(String[] args) {
-        if (args.length != 1){
-            System.err.println("Please provide the API Key as an argument.");
-            System.exit(1);
-        }
+        validateArguments(args);
 
         String apiKey = args[0];
-
         WeatherProvider weatherProvider = new OpenWeatherMapProvider(apiKey);
         WeatherStore weatherStore = new SQLiteWeatherStore();
         WeatherController weatherController = new WeatherController(weatherProvider, weatherStore);
 
+        scheduleWeatherTask(weatherController);
+    }
+
+    private static void validateArguments(String[] args) {
+        if (args.length != 1) {
+            System.err.println("Please provide the API Key as an argument.");
+            System.exit(1);
+        }
+    }
+
+    private static void scheduleWeatherTask(WeatherController weatherController) {
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override

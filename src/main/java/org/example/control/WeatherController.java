@@ -17,11 +17,12 @@ public class WeatherController {
     }
 
     public void runTask() throws IOException {
-        task();
+        List<Location> locations = createLocations();
+        processWeatherData(locations);
     }
 
-    private void task() {
-        List<Location> locations = Arrays.asList(
+    private List<Location> createLocations() {
+        return Arrays.asList(
                 new Location(27.714005, -17.997413, "ElHierro"),
                 new Location(28.089477, -17.112303, "LaGomera"),
                 new Location(28.657405, -17.912805, "LaPalma"),
@@ -31,13 +32,19 @@ public class WeatherController {
                 new Location(29.060357, -13.559169, "Lanzarote"),
                 new Location(29.232142, -13.502623, "LaGraciosa")
         );
+    }
 
+    private void processWeatherData(List<Location> locations) {
         for (Location location : locations) {
             List<Weather> weatherList = provider.get(location);
-            if (weatherList != null && !weatherList.isEmpty()) {
-                for (Weather weather : weatherList) {
-                    store.storeWeather(weather.getLocation().getIsland(), weather);
-                }
+            storeWeatherData(weatherList, location.getIsland());
+        }
+    }
+
+    private void storeWeatherData(List<Weather> weatherList, String island) {
+        if (weatherList != null && !weatherList.isEmpty()) {
+            for (Weather weather : weatherList) {
+                store.storeWeather(island, weather);
             }
         }
     }
