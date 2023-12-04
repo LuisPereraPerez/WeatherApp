@@ -1,6 +1,8 @@
 package org.example.control;
 
 import com.google.gson.*;
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.example.event.WeatherEvent;
 import org.example.model.Location;
 import org.example.model.Weather;
 import org.jsoup.Jsoup;
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.jms.*;
 
 public class OpenWeatherMapProvider implements WeatherProvider {
     private String apiKey;
@@ -29,6 +32,7 @@ public class OpenWeatherMapProvider implements WeatherProvider {
             Gson gson = new Gson();
             JsonObject jsonObject = gson.fromJson(jsonResponse, JsonObject.class);
             JsonArray listArray = jsonObject.getAsJsonArray("list");
+
             return processWeatherData(listArray, location);
         }
         catch (IOException e) {
@@ -78,7 +82,9 @@ public class OpenWeatherMapProvider implements WeatherProvider {
         Integer clouds = cloudsData.get("all").getAsInt();
         JsonObject windData = data.getAsJsonObject("wind");
         Double windSpeed = windData.get("speed").getAsDouble();
-        Weather weather = new Weather(temp, precipitation, humidity, clouds, windSpeed, Instant.ofEpochSecond(data.get("dt").getAsLong()), location);
+        Instant ts = Instant.now();
+        String ss = "prediction-provider";
+        Weather weather = new Weather(temp, precipitation, humidity, clouds, windSpeed, Instant.ofEpochSecond(data.get("dt").getAsLong()), location, ts, ss);
         return weather;
     }
 }

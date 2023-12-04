@@ -12,7 +12,7 @@ public class Main {
 
         String apiKey = args[0];
         WeatherProvider weatherProvider = new OpenWeatherMapProvider(apiKey);
-        WeatherStore weatherStore = new SQLiteWeatherStore();
+        WeatherStore weatherStore = new WeatherEventStore();
         WeatherController weatherController = new WeatherController(weatherProvider, weatherStore);
 
         scheduleWeatherTask(weatherController);
