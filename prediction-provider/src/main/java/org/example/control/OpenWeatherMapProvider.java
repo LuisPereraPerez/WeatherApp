@@ -1,8 +1,6 @@
 package org.example.control;
 
 import com.google.gson.*;
-import org.apache.activemq.ActiveMQConnectionFactory;
-import org.example.event.WeatherEvent;
 import org.example.model.Location;
 import org.example.model.Weather;
 import org.jsoup.Jsoup;
@@ -14,7 +12,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.jms.*;
 
 public class OpenWeatherMapProvider implements WeatherProvider {
     private String apiKey;

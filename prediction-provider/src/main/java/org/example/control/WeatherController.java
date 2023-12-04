@@ -16,7 +16,7 @@ public class WeatherController {
         this.store = weatherStore;
     }
 
-    public void runTask() throws IOException {
+    public void runTask() throws IOException, WeatherException {
         List<Location> locations = createLocations();
         processWeatherData(locations);
     }
@@ -34,14 +34,14 @@ public class WeatherController {
         );
     }
 
-    private void processWeatherData(List<Location> locations) {
+    private void processWeatherData(List<Location> locations) throws WeatherException {
         for (Location location : locations) {
             List<Weather> weatherList = provider.get(location);
             storeWeatherData(weatherList, location.getIsland());
         }
     }
 
-    private void storeWeatherData(List<Weather> weatherList, String island) {
+    private void storeWeatherData(List<Weather> weatherList, String island) throws WeatherException {
         if (weatherList != null && !weatherList.isEmpty()) {
             for (Weather weather : weatherList) {
                 store.storeWeather(island, weather);

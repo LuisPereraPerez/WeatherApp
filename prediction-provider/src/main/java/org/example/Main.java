@@ -31,7 +31,11 @@ public class Main {
             @Override
             public void run() {
                 try {
-                    weatherController.runTask();
+                    try {
+                        weatherController.runTask();
+                    } catch (WeatherException e) {
+                        throw new RuntimeException(e);
+                    }
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

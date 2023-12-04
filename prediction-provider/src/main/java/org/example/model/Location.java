@@ -1,6 +1,8 @@
 package org.example.model;
 
-public class Location {
+import java.io.Serializable;
+
+public class Location implements Serializable {
     private final double lat;
     private final double lon;
     private final String island;
@@ -21,5 +23,14 @@ public class Location {
 
     public String getIsland() {
         return island;
+    }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "lat=" + lat +
+                ", lon=" + lon +
+                ", island='" + island + '\'' +
+                '}';
     }
 }

@@ -1,8 +1,9 @@
 package org.example.model;
 
+import java.io.Serializable;
 import java.time.Instant;
 
-public class Weather {
+public class Weather implements Serializable {
     private final double temp;
     private final double precipitation;
     private final int humidity;
