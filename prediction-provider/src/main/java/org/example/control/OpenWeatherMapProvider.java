@@ -26,10 +26,8 @@ public class OpenWeatherMapProvider implements WeatherProvider {
             String url = buildApiUrl(location);
             Document doc = Jsoup.connect(url).ignoreContentType(true).get();
             String jsonResponse = doc.text();
-            Gson gson = new Gson();
-            JsonObject jsonObject = gson.fromJson(jsonResponse, JsonObject.class);
+            JsonObject jsonObject = parseJsonResponse(jsonResponse);
             JsonArray listArray = jsonObject.getAsJsonArray("list");
-
             return processWeatherData(listArray, location);
         }
         catch (IOException e) {
@@ -45,6 +43,11 @@ public class OpenWeatherMapProvider implements WeatherProvider {
                 "&appid=" +
                 this.apiKey +
                 "&units=metric";
+    }
+
+    private JsonObject parseJsonResponse(String jsonResponse) {
+        Gson gson = new Gson();
+        return gson.fromJson(jsonResponse, JsonObject.class);
     }
 
     private List<Weather> processWeatherData(JsonArray listArray, Location location) {

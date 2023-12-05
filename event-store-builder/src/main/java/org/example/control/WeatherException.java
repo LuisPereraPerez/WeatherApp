@@ -1,4 +1,4 @@
-package org.example;
+package org.example.control;
 
 public class WeatherException extends Exception{
     public WeatherException(String message){

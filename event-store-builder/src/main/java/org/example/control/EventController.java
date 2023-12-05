@@ -1,4 +1,4 @@
-package org.example;
+package org.example.control;
 
 public class EventController {
     private final EventsReceiver receiver;

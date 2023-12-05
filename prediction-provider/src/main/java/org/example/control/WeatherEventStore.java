@@ -10,9 +10,9 @@ import javax.jms.*;
 import java.time.Instant;
 
 public class WeatherEventStore implements WeatherStore{
-    private static String url = ActiveMQConnection.DEFAULT_BROKER_URL;
-    private static String subject = "topic:prediction.Weather";
-    private Gson gson;
+    private static final String url = ActiveMQConnection.DEFAULT_BROKER_URL;
+    private static final String subject = "topic:prediction.Weather";
+    private final Gson gson;
 
     public WeatherEventStore() {
         gson = new GsonBuilder()
@@ -23,20 +23,40 @@ public class WeatherEventStore implements WeatherStore{
     public void storeWeather(String location, Weather weather) throws WeatherException{
         Connection connection = null;
         try {
-            ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(url);
-            connection = connectionFactory.createConnection();
-            connection.start();
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            Destination destination = session.createQueue(subject);
-            MessageProducer producer = session.createProducer(destination);
-            String serializeData = serializeWeather(weather);
-            TextMessage message = session.createTextMessage(serializeData);
+            connection = createConnection();
+            Session session = createSession(connection);
+            Destination destination = createQueue(session);
+            MessageProducer producer = createProducer(session, destination);
+            String serializedData = serializeWeather(weather);
+            TextMessage message = createTextMessage(session, serializedData);
             producer.send(message);
-            connection.close();
         } catch (JMSException e) {
             e.printStackTrace();
-            throw new WeatherException("Error when storing the weather");
+            throw new WeatherException("Error when storing the weather", e);
+        } finally {
+            closeConnection(connection);
         }
+    }
+
+    private Connection createConnection() throws JMSException {
+        ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(url);
+        return connectionFactory.createConnection();
+    }
+
+    private Session createSession(Connection connection) throws JMSException {
+        return connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+    }
+
+    private Destination createQueue(Session session) throws JMSException {
+        return session.createQueue(subject);
+    }
+
+    private MessageProducer createProducer(Session session, Destination destination) throws JMSException {
+        return session.createProducer(destination);
+    }
+
+    private TextMessage createTextMessage(Session session, String serializedData) throws JMSException {
+        return session.createTextMessage(serializedData);
     }
 
     private String serializeWeather(Weather weather) throws WeatherException {
@@ -44,6 +64,16 @@ public class WeatherEventStore implements WeatherStore{
             return gson.toJson(weather);
         } catch (Exception e) {
             throw new WeatherException("Error during weather serialization", e);
+        }
+    }
+
+    private void closeConnection(Connection connection) {
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (JMSException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
