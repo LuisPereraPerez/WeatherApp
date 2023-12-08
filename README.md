@@ -1,7 +1,7 @@
 # Publisher/Subscriber with ActiveMQ
 
 ## Assignment Details
-- **Title:** Weather Data Capture
+- **Title:** Publisher/Subscriber with ActiveMQ
 - **Subject:** Desarrollo de aplicaciones para ciencia de datos
 - **Student:** Luis Perera Pérez
 - **Year:** 2023/2024
