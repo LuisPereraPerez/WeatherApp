@@ -10,8 +10,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>prediction-provider</module>
-        <module>event-store-builder</module>
         <module>datalake-builder</module>
+        <module>sunrise-sunset-provider</module>
     </modules>
 
     <properties>
