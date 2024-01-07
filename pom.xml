@@ -11,6 +11,7 @@
     <modules>
         <module>prediction-provider</module>
         <module>event-store-builder</module>
+        <module>datalake-builder</module>
     </modules>
 
     <properties>

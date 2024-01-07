@@ -7,7 +7,7 @@ public class EventController {
         this.receiver = eventsReceiver;
     }
 
-    public void runTask() throws WeatherException {
+    public void runTask() throws EventException {
         this.receiver.receive();
     }
 }
