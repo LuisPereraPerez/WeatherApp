@@ -14,6 +14,7 @@ import java.util.Date;
 public class EventStoreBuilder implements EventsReceiver {
     private static String url = ActiveMQConnectionFactory.DEFAULT_BROKER_URL;
     private static String weatherSubject  = "prediction.Weather";
+    private static String sunriseSunsetSubject = "sunriseSunset.Events";
     private static String directory = "DataLake";
 
     public void receive() throws EventException {
@@ -24,6 +25,7 @@ public class EventStoreBuilder implements EventsReceiver {
             connection.start();
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             createSubscription(session, weatherSubject, "weather-datalake-builder");
+            createSubscription(session, sunriseSunsetSubject, "sunriseSunset-datalake-builder");
         } catch (JMSException e) {
             throw new EventException("Error receiving messages", e);
         }
@@ -42,6 +44,9 @@ public class EventStoreBuilder implements EventsReceiver {
             }
             try {
                 storeEvent(text);
+
+
+
             } catch (EventException e){
                 throw new RuntimeException(e);
             }
