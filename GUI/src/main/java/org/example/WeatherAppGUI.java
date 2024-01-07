@@ -28,9 +28,9 @@ public class WeatherAppGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("WeatherApp");
+        primaryStage.setTitle("Best Sunrise Sunset Places");
 
-        Label titleLabel = new Label("Weather App");
+        Label titleLabel = new Label("Best Sunrise Sunset Places");
         titleLabel.setStyle("-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #000000;"); // Blanco
 
         Button btnHome = new Button("Home");

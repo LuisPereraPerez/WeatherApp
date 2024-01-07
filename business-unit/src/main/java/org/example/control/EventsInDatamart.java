@@ -58,9 +58,6 @@ public class EventsInDatamart implements EventsReceiver {
         }
 
         if (weatherList.size() >= 64 && sunriseSunsetList.size() >= 32) {
-            System.out.println(weatherList);
-            System.out.println(sunriseSunsetList);
-
             List<List<Object>> pairedEvents = pairEventsByDate(weatherList, sunriseSunsetList);
             storeDataInDatabase(pairedEvents);
 
