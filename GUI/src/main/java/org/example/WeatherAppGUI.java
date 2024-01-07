@@ -17,6 +17,8 @@ import javafx.stage.Stage;
 
 import java.util.*;
 
+import static java.util.Arrays.asList;
+
 public class WeatherAppGUI extends Application {
     private String currentIsland = "";
 
@@ -54,17 +56,17 @@ public class WeatherAppGUI extends Application {
         // Crear una tabla
         TableView<List<String>> tableView = new TableView<>();
         tableView.setVisible(false);
-        TableColumn<List<String>, String> columnTemp = new TableColumn<>("Temperature");
+        TableColumn<List<String>, String> columnTemp = new TableColumn<>("Temperature (ºC)");
         TableColumn<List<String>, String> columnPop = new TableColumn<>("Probably of Precipitation");
-        TableColumn<List<String>, String> columnHumidity = new TableColumn<>("Humidity");
-        TableColumn<List<String>, String> columnClouds = new TableColumn<>("Clouds %");
-        TableColumn<List<String>, String> columnWS = new TableColumn<>("Wind Speed");
+        TableColumn<List<String>, String> columnHumidity = new TableColumn<>("Humidity (%)");
+        TableColumn<List<String>, String> columnClouds = new TableColumn<>("Clouds (%)");
+        TableColumn<List<String>, String> columnWS = new TableColumn<>("Wind Speed (m/s)");
         TableColumn<List<String>, String> columnPT = new TableColumn<>("Prediction Time Weather");
         TableColumn<List<String>, String> columnSunriseSunset = new TableColumn<>("SunriseSunset");
-        TableColumn<List<String>, String> columnEval = new TableColumn<>("Evaluation");
+        TableColumn<List<String>, String> columnEval = new TableColumn<>("Valuation");
         TableColumn<List<String>, String> columnDate = new TableColumn<>("Date");
 
-        List<TableColumn<List<String>, String>> columnList = Arrays.asList(columnTemp, columnPop, columnHumidity, columnClouds, columnWS, columnPT, columnSunriseSunset, columnEval, columnDate);
+        List<TableColumn<List<String>, String>> columnList = asList(columnTemp, columnPop, columnHumidity, columnClouds, columnWS, columnPT, columnSunriseSunset, columnEval, columnDate);
 
         for (int i = 0;  i < columnList.size(); ++i){
             TableColumn<List<String>, String> column = columnList.get(i);
@@ -97,7 +99,7 @@ public class WeatherAppGUI extends Application {
         buttonList.add(btnLanzarote);
         buttonList.add(btnLaGraciosa);
 
-        List<Button> listSunriseSunsetButton = Arrays.asList(btnSunrise,btnSunset);
+        List<Button> listSunriseSunsetButton = asList(btnSunrise,btnSunset);
 
         List<String> urls = new ArrayList<>();
         urls.add("https://upload.wikimedia.org/wikipedia/commons/2/25/Santa_Cruz_de_Tenerife_SPOT_1320.jpg");
@@ -109,7 +111,7 @@ public class WeatherAppGUI extends Application {
         urls.add("https://upload.wikimedia.org/wikipedia/commons/9/96/Lanzarote%27s_Lunar-Like_Landscape.jpg");
         urls.add("https://imgcap.capturetheatlas.com/wp-content/uploads/2020/01/mapa-geografico-de-la-graciosa.jpg");
 
-        List<String> islandNames = Arrays.asList("ElHierro", "LaGomera", "LaPalma", "Tenerife", "GranCanaria", "Fuerteventura", "Lanzarote", "LaGraciosa");
+        List<String> islandNames = asList("ElHierro", "LaGomera", "LaPalma", "Tenerife", "GranCanaria", "Fuerteventura", "Lanzarote", "LaGraciosa");
         List<List<String>> lists = new ArrayList<>();
         for (String island : islandNames){
             List<String> list = new ArrayList<>();
@@ -164,7 +166,7 @@ public class WeatherAppGUI extends Application {
                     String type = "sunrise";
                     tableView.setVisible(true);
                     columnSunriseSunset.setText("Sunrise Time");
-                    List<String> dataList = new ConexionBD().ConexionBD(sunrise, type);
+                    List<List<String>> dataList = new ConexionBD().ConexionBD(sunrise, type);
                     updateTableView(dataList, tableView);
                 });
 
@@ -173,7 +175,7 @@ public class WeatherAppGUI extends Application {
                     String type = "sunset";
                     tableView.setVisible(true);
                     columnSunriseSunset.setText("Sunset Time");
-                    List<String> dataList = new ConexionBD().ConexionBD(sunset, type);
+                    List<List<String>> dataList = new ConexionBD().ConexionBD(sunset, type);
                     updateTableView(dataList, tableView);
                 });
             });
@@ -182,7 +184,7 @@ public class WeatherAppGUI extends Application {
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setFitToWidth(true);
 
-        HBox buttonsHBox = new HBox(btnElHierro, btnLaGomera, btnLaPalma, btnTenerife, btnGranCanaria, btnFuerteventura, btnLanzarote, btnLaGraciosa); // Alinea los botones verticalmente
+        HBox buttonsHBox = new HBox(btnElHierro, btnLaGomera, btnLaPalma, btnTenerife, btnGranCanaria, btnFuerteventura, btnLanzarote, btnLaGraciosa);
         buttonsHBox.setAlignment(Pos.CENTER);
         buttonsHBox.setSpacing(5);
 
@@ -216,12 +218,8 @@ public class WeatherAppGUI extends Application {
         }
     }
 
-    private void updateTableView(List<String> dataList, TableView<List<String>> tableView) {
-        ObservableList<List<String>> tableData = FXCollections.observableArrayList();
-        for (String data : dataList) {
-            String[] splitData = data.split("\\s+");
-            tableData.add(Arrays.asList(splitData[0], splitData[1], splitData[2], splitData[3], splitData[4], splitData[5], splitData[6], splitData[7], splitData[8]));
-        }
+    private void updateTableView(List<List<String>> dataList, TableView<List<String>> tableView) {
+        ObservableList<List<String>> tableData = FXCollections.observableArrayList(dataList);
         tableView.setItems(tableData);
     }
 }

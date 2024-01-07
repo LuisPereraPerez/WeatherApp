@@ -187,8 +187,16 @@ public class EventsInDatamart implements EventsReceiver {
 
     private static String analyze(String weather) {
         Double eval = getTemp(weather) * 0.15 + getPrecipitation(weather) * 0.5 + getHumidity(weather) * 0.1 + getWindSpeed(weather) * 0.15 + getClouds(weather) * 0.3;
-        DecimalFormat df = new DecimalFormat("#.000");
-        return df.format(eval);
+        if (eval >= 30){
+            return "Not recommended";
+        }else if (eval < 30 && eval >= 20) {
+            return "Not bad, but could be better";
+        } else if (eval < 20 && eval >= 10) {
+            return "It's ok";
+        } else if (eval < 10) {
+            return "It's perfect";
+        }
+        return String.valueOf(eval);
     }
 
     private static String extractDate(String weather) {

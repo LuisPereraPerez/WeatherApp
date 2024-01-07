@@ -11,16 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConexionBD {
-    public static void main(String[] args) {
-        List<String> list = ConexionBD("ElHierro_sunset", "sunset");
-        System.out.println(list);
-    }
-
     public ConexionBD() {
     }
 
-    public static List<String> ConexionBD(String tableName, String type) {
-        List<String> list = new ArrayList<>();
+    public static List<List<String>> ConexionBD(String tableName, String type) {
+        List<List<String>> list = new ArrayList<>();
         Connection connection = null;
         try {
             Class.forName("org.sqlite.JDBC");
@@ -35,6 +30,7 @@ public class ConexionBD {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM " + tableName);
             while (resultSet.next()) {
+                List<String> data = new ArrayList<>();
                 Double temp = resultSet.getDouble("temp");
                 Double precipitation = resultSet.getDouble("precipitation");
                 Integer humidity = resultSet.getInt("humidity");
@@ -52,7 +48,15 @@ public class ConexionBD {
                 String tsString  = resultSet.getString("ts");
                 LocalDate ts = LocalDate.parse(tsString);
                 if (!ts.isBefore(LocalDate.now())) {
-                    String data = temp + " " + precipitation + " " + humidity + " " + clouds + " " + windSpeed + " " + predictionTime + " " + sunriseOrSunset + " " + eval + " " + tsString;
+                    data.add(String.valueOf(temp));
+                    data.add(String.valueOf(precipitation));
+                    data.add(String.valueOf(humidity));
+                    data.add(String.valueOf(clouds));
+                    data.add(String.valueOf(windSpeed));
+                    data.add(predictionTime);
+                    data.add(sunriseOrSunset);
+                    data.add(eval);
+                    data.add(tsString);
                     list.add(data);
                 }
             }
