@@ -18,8 +18,8 @@ public class SQLiteStore {
         try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
             try (Statement statement = connection.createStatement()) {
                 for (String island : ISLANDS) {
-                    String tableName = island + "_sunrise";
-                    String createTableQuery = "CREATE TABLE IF NOT EXISTS " + tableName + " (" +
+                    String tableNameSunrise = island + "_sunrise";
+                    String createTableQuerySunrise = "CREATE TABLE IF NOT EXISTS " + tableNameSunrise + " (" +
                             "temp REAL, " +
                             "precipitation REAL, " +
                             "humidity INTEGER, " +
@@ -29,7 +29,19 @@ public class SQLiteStore {
                             "sunrise TEXT, " +
                             "eval TEXT, " +
                             "ts TEXT PRIMARY KEY)";
-                    statement.executeUpdate(createTableQuery);
+                    statement.executeUpdate(createTableQuerySunrise);
+                    String tableNameSunset = island + "_sunset";
+                    String createTableQuerySunset = "CREATE TABLE IF NOT EXISTS " + tableNameSunset + " (" +
+                            "temp REAL, " +
+                            "precipitation REAL, " +
+                            "humidity INTEGER, " +
+                            "clouds INTEGER, " +
+                            "windSpeed REAL, " +
+                            "predictionTime TEXT, " +
+                            "sunset TEXT, " +
+                            "eval TEXT, " +
+                            "ts TEXT PRIMARY KEY)";
+                    statement.executeUpdate(createTableQuerySunset);
                 }
             }
         } catch (SQLException e) {

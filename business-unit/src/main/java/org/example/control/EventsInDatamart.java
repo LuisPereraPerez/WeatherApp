@@ -9,9 +9,9 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 public class EventsInDatamart implements EventsReceiver {
-    private static final String url = ActiveMQConnectionFactory.DEFAULT_BROKER_URL;
-    private static final String weatherSubject = "prediction.Weather";
-    private static final String sunriseSunsetSubject = "sunriseSunset.Events";
+    private static String url = ActiveMQConnectionFactory.DEFAULT_BROKER_URL;
+    private static String weatherSubject = "prediction.Weather";
+    private static String sunriseSunsetSubject = "sunriseSunset.Events";
     private List<String> weatherList = new ArrayList<>();
     private List<String> sunriseSunsetList = new ArrayList<>();
 
@@ -207,8 +207,8 @@ public class EventsInDatamart implements EventsReceiver {
             String date = (String) objects.get(5);
 
             String islandName = getIsland(getLocation(weather1));
-            sqLiteStore.store(islandName, weather1, sunriseSunset, evalSunrise, date, "sunrise");
             sqLiteStore.store(islandName, weather2, sunriseSunset, evalSunset, date, "sunset");
+            sqLiteStore.store(islandName, weather1, sunriseSunset, evalSunrise, date, "sunrise");
         }
     }
 }
