@@ -14,7 +14,6 @@
         <module>sunrise-sunset-provider</module>
         <module>business-unit</module>
         <module>GUI</module>
-        <module>GUI</module>
     </modules>
 
     <properties>
@@ -48,11 +47,6 @@
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-client</artifactId>
             <version>5.16.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
-            <version>17.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
