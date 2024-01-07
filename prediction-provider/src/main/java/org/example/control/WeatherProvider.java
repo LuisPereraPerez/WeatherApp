@@ -6,5 +6,5 @@ import org.example.model.Weather;
 import java.util.List;
 
 public interface WeatherProvider {
-    List<Weather> get(Location location);
+    List<List<Weather>> get(Location location);
 }

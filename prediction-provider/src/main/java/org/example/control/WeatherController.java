@@ -36,8 +36,10 @@ public class WeatherController {
 
     private void processWeatherData(List<Location> locations) throws WeatherException {
         for (Location location : locations) {
-            List<Weather> weatherList = provider.get(location);
-            storeWeatherData(weatherList, location.getIsland());
+            List<List<Weather>> weatherList = provider.get(location);
+            for (List<Weather> weathers: weatherList){
+                storeWeatherData(weathers, location.getIsland());
+            }
         }
     }
 

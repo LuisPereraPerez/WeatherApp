@@ -7,10 +7,13 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class OpenWeatherMapProvider implements WeatherProvider {
@@ -21,7 +24,7 @@ public class OpenWeatherMapProvider implements WeatherProvider {
     }
 
     @Override
-    public List<Weather> get(Location location) {
+    public List<List<Weather>> get(Location location) {
         try {
             String url = buildApiUrl(location);
             Document doc = Jsoup.connect(url).ignoreContentType(true).get();
@@ -50,27 +53,39 @@ public class OpenWeatherMapProvider implements WeatherProvider {
         return gson.fromJson(jsonResponse, JsonObject.class);
     }
 
-    private List<Weather> processWeatherData(JsonArray listArray, Location location) {
-        List<Weather> fiveDays = new ArrayList<>();
+    private List<List<Weather>> processWeatherData(JsonArray listArray, Location location) {
+        List<List<Weather>> result = new ArrayList<>();
+        List<Weather> dailyPredictions = new ArrayList<>();
         for (int i = 0; i < listArray.size(); i++) {
             JsonObject data = listArray.get(i).getAsJsonObject();
             if (isPrediction(data)) {
                 Weather weather = extractWeatherData(data, location);
-                fiveDays.add(weather);
-                if (fiveDays.size() == 5) {
-                    break;
+                dailyPredictions.add(weather);
+                if (dailyPredictions.size() == 2) {
+                    result.add(new ArrayList<>(dailyPredictions));
+                    dailyPredictions.clear();
+                    if (result.size() == 4) {
+                        break;
+                    }
                 }
             }
         }
-        return fiveDays;
+        return result;
     }
 
     private boolean isPrediction(JsonObject data) {
         String predictionDateTime = data.get("dt_txt").getAsString();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime localDateTime = LocalDateTime.parse(predictionDateTime, formatter);
-        return localDateTime.getHour() == 12 && localDateTime.getMinute() == 0;
+
+        LocalDate currentDate = LocalDate.now();
+        LocalDate nextDay = currentDate.plusDays(1);
+        int dia = nextDay.getDayOfMonth();
+        int dia1 = localDateTime.getDayOfMonth();
+
+        return (localDateTime.getHour() == 9 || localDateTime.getHour() == 18) && localDateTime.getMinute() == 0 && (dia1 >= dia);
     }
+
 
     private Weather extractWeatherData(JsonObject data, Location location) {
         JsonObject mainData = data.getAsJsonObject("main");
@@ -83,7 +98,7 @@ public class OpenWeatherMapProvider implements WeatherProvider {
         JsonObject windData = data.getAsJsonObject("wind");
         Double windSpeed = windData.get("speed").getAsDouble();
         Instant ts = Instant.now();
-        String ss = "prediction-provider";
+        String ss = "OpenWeatherMap";
         Weather weather = new Weather(temp, precipitation, humidity, clouds, windSpeed, Instant.ofEpochSecond(data.get("dt").getAsLong()), location, ts, ss);
         return weather;
     }

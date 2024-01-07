@@ -11,7 +11,7 @@ import java.time.Instant;
 
 public class WeatherEventStore implements WeatherStore{
     private static final String url = ActiveMQConnection.DEFAULT_BROKER_URL;
-    private static final String subject = "topic:prediction.Weather";
+    private static final String subject = "prediction.Weather";
     private final Gson gson;
 
     public WeatherEventStore() {
@@ -25,7 +25,7 @@ public class WeatherEventStore implements WeatherStore{
         try {
             connection = createConnection();
             Session session = createSession(connection);
-            Destination destination = createQueue(session);
+            Destination destination = createTopic(session);
             MessageProducer producer = createProducer(session, destination);
             String serializedData = serializeWeather(weather);
             TextMessage message = createTextMessage(session, serializedData);
@@ -33,8 +33,6 @@ public class WeatherEventStore implements WeatherStore{
         } catch (JMSException e) {
             e.printStackTrace();
             throw new WeatherException("Error when storing the weather", e);
-        } finally {
-            closeConnection(connection);
         }
     }
 
@@ -47,8 +45,8 @@ public class WeatherEventStore implements WeatherStore{
         return connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
     }
 
-    private Destination createQueue(Session session) throws JMSException {
-        return session.createQueue(subject);
+    private Destination createTopic(Session session) throws JMSException {
+        return session.createTopic(subject);
     }
 
     private MessageProducer createProducer(Session session, Destination destination) throws JMSException {
@@ -64,16 +62,6 @@ public class WeatherEventStore implements WeatherStore{
             return gson.toJson(weather);
         } catch (Exception e) {
             throw new WeatherException("Error during weather serialization", e);
-        }
-    }
-
-    private void closeConnection(Connection connection) {
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (JMSException e) {
-                e.printStackTrace();
-            }
         }
     }
 }
