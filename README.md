@@ -26,7 +26,7 @@ There is also another module, GUI, which is the user interface, in this one what
 ![Diagrama UML](diagramaUML4.png)
 - data-lake module diagram
 ![Diagrama UML](diagramaUML2.png)
-- data-lake module diagram
+- business-unit module diagram
 ![Diagrama UML](diagramaUML3.png)
 - GUI module diagram
 ![Diagrama UML](diagramaUML5.png)

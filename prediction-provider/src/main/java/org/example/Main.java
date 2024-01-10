@@ -40,6 +40,6 @@ public class Main {
                     throw new RuntimeException(e);
                 }
             }
-        }, 0, 3 * 60 * 1000);
+        }, 0, 6 * 60 * 60 * 1000);
     }
 }
